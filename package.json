@@ -1,0 +1,9 @@
+{
+  "name": "@mep.im/see",
+  "version": "1.0.0",
+  "description": "See is a simple web analytics library.",
+  "main": "index.js",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.2.1"
+  }
+}
