@@ -1,3 +1,5 @@
+### WIP
+
 "See" is a simple analytics library. It sends events to database. Right now set up for [supabase](https://supabase.com/).
 
 ### DATA MODEL
@@ -15,8 +17,7 @@
   }
   
   itemToPost {
-    item,
-    data: item // redundant bc i haven't decided how i'd like to parse data
+    data: item
   }
 ```
 

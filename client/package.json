@@ -1,0 +1,31 @@
+{
+  "name": "See - Client",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "pnpm run dev-server & pnpm run dev-bundle",
+    "dev-server": "http-server ./public --proxy https://127.0.0.1:8080?",
+    "dev-bundle": "pnpm copy-static && watchify index.js -v --debug --poll=100 -t envify -t [ browserify-css --output public/bundle.css ]  -t [ babelify --global ] -o public/bundle.js",
+    "copy-static": "mkdir -p public && cp -R static public/ && cp index.html public/",
+    "build": "pnpm copy-static && browserify index.js -t envify -t [ browserify-css --output public/bundle.css ] -t [ babelify --global ] -o public/bundle.js"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.19.1",
+    "@babel/preset-env": "^7.19.1",
+    "babelify": "^10.0.0",
+    "browserify": "^17.0.0",
+    "browserify-css": "^0.15.0",
+    "copy-static": "^1.0.3",
+    "envify": "^4.1.0",
+    "http-server": "^14.1.0",
+    "tinyify": "^3.0.0",
+    "watchify": "^4.0.0"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.2.2",
+    "choo": "^7.1.0",
+    "d3": "^7.8.0",
+    "see": "../"
+  }
+}

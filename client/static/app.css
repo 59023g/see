@@ -1,0 +1,26 @@
+body {
+  font-family: monospace
+}
+
+ul {
+  list-style: none;
+  padding-left: 4px;
+}
+
+.uppercase { text-transform: uppercase; }
+
+.df {display: flex;}
+.fdr {flex-direction: row;}
+.fdc {flex-direction: column;}
+
+.ml4 {margin-left: 4px}
+.mr4 {margin-right: 4px}
+
+.dn {display: none;}
+.fwb {font-weight: bold;}
+.fww {flex-wrap: wrap;}
+
+.jcsb {justify-content: space-between;}
+
+.entry-date { background: black; color: white; padding: 4px}
+.session { background: aliceblue; padding: 0 4px}

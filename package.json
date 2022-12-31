@@ -1,5 +1,5 @@
 {
-  "name": "@mep.im/see",
+  "name": "see",
   "version": "1.0.0",
   "description": "See is a simple web analytics library.",
   "main": "index.js",
