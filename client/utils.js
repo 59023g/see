@@ -31,7 +31,8 @@ export function renderActionDetail(ad) {
 }
 
 export function getClickThroughs(data) {
-  if(data.action === "https://time.claims") {
+  if (!data.action) return false
+  if(data.action.includes("time.claims")) {
     return true
   }
 }

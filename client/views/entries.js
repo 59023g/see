@@ -8,7 +8,7 @@ export default (state, emit) => {
 
   function renderEntry(dayArr) {
     let entries = ""
-
+    dayArr.reverse()
     for (let i = 0; i < dayArr.length; i++) {
       let {
         timestamp,
@@ -27,17 +27,17 @@ export default (state, emit) => {
                 <div class="mr4 fwb">
                     ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}
                 </div>
+                <div class="session mr4 ${sessionId ? '' : 'dn'}">
+                  ${sessionId ? sessionId.slice(0,24) : ''}
+                </div>
                 <div class="uppercase mr4">
                     ${renderActionType(action_type)}
                 </div>
-                <div class="mr4">-</div>
+                <div class="mr4 ${action_type === "visit" ? 'dn' : ''}">-</div>
 
                 ${action_detail ? renderActionDetail(action_detail) : ""}
-                <div class="${action ? '' : 'dn'}">
-                    (${action ? "→ " + action : ""})
-                </div>
-                <div class="session ${sessionId ? '' : 'dn'}">
-                    ${sessionId ? sessionId.slice(0,24) : ''}
+                <div class="${action ? 'df ' : 'dn'}">
+                    (${action ? renderAction(action) : ""})
                 </div>
                 <div class="${referrer ? 'df fdr' : 'dn'}">
                     Referrer: ${referrer}
@@ -84,4 +84,14 @@ export default (state, emit) => {
         </ul>
       </div>
   `
+}
+
+function renderAction(action) {
+  if(action.includes("time.claims")) {
+    return `→ <div class='action df'> ${action}</div>`
+    
+  }
+
+  return "→ " + action
+  
 }
