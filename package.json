@@ -4,6 +4,6 @@
   "description": "See is a simple web analytics library.",
   "main": "index.js",
   "dependencies": {
-    "@supabase/supabase-js": "^2.2.1"
+    "@supabase/supabase-js": "^2.2.3"
   }
 }

@@ -16,22 +16,26 @@ export default (state, emit) => {
         action_type,
         action,
         action_detail,
-        referrer
+        referrer,
+        meta,
+        source
       } = dayArr[i].data;
 
       const date = new Date(timestamp)
-
+      // console.log(dayArr[i])
       entries += `
         <li>
             <div class="df fdr fww">
                 <div class="mr4 fwb">
                     ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}
                 </div>
+                
+                <div class="mr4">${renderSource(source)}</div>
                 <div class="session mr4 ${sessionId ? '' : 'dn'}">
                   ${sessionId ? sessionId.slice(0,24) : ''}
                 </div>
                 <div class="uppercase mr4">
-                    ${renderActionType(action_type)}
+                    ${renderActionType(action_type, meta )}
                 </div>
                 <div class="mr4 ${action_type === "visit" ? 'dn' : ''}">-</div>
 
@@ -51,6 +55,13 @@ export default (state, emit) => {
 
   }
 
+  function renderSource(source) {
+    if (source.includes("time.claims")) {
+      return "TC"
+    } else {
+      return "TS"
+    }
+  }
   function renderDay() {
     if (!state.data) return
     let days = ""

@@ -18,9 +18,10 @@ export function getTwitRefs(ref) {
   }
 }
 
-export function renderActionType (at) {
+export function renderActionType (at, meta) {
   // navigate is legacy
   if (at === "navigate") return "click"
+  if (at === "visit" && meta) return `visit - ${meta.city ?? ""} ${meta.ip ?? ""}`
   return at
 }
 

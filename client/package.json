@@ -6,7 +6,7 @@
   "scripts": {
     "start": "pnpm run dev-server & pnpm run dev-bundle",
     "dev-server": "http-server ./public --proxy https://127.0.0.1:8080?",
-    "dev-bundle": "pnpm copy-static && watchify index.js -v --debug --poll=100 -t envify -t [ browserify-css --output public/bundle.css ]  -t [ babelify --global ] -o public/bundle.js",
+    "dev-bundle": "pnpm copy-static && watchify index.js ../ -v --debug --poll=100 -t envify -t [ browserify-css --output public/bundle.css ]  -t [ babelify --global ] -o public/bundle.js",
     "copy-static": "mkdir -p public && cp -R static public/ && cp index.html public/",
     "build": "pnpm copy-static && browserify index.js -t envify -t [ browserify-css --output public/bundle.css ] -t [ babelify --global ] -o public/bundle.js"
   },

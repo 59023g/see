@@ -1,64 +1,56 @@
-const { createClient } = require('@supabase/supabase-js')
+const recognizedParams = ["fbclid", "q"]
 
-let database 
-let SUPABASE_TABLE_NAME
+function getQueryParam() {
+  for (const item of recognizedParams) {
+    let param = new URL(window.location.href).searchParams.get(item)
+    if (param) return param
+  }
+}
 
-const recognizedParams = ["fbclid"]
-
-// this needs to be a next function can get ip? and incorporate navigator
-// switch to beacon so non-blocking https://developer.mozilla.org/en-US/docs/Web/API/Beacon_API
-// https://developer.mozilla.org/en-US/docs/Web/API/Navigator/sendBeacon
-// https://support.google.com/google-ads/answer/2472708?hl=en
-
-function initSeeClient(config) {
-  if (!config.SUPABASE_ANON) throw "Missing Supabase"
-  SUPABASE_TABLE_NAME = config.SUPABASE_TABLE_NAME
-  
-  database = createClient(
-    config.SUPABASE_URL,
-    config.SUPABASE_ANON
-  )
-  
-  if(config.disableEventListener === true) { return }
+function initSeeClient(config = {}) {
+  if (config.disableEventListener === true) { return }
   // check if qyery param // put in sessionstorage
   // if not, create session id put in session storage
-  
-  const sessionId = new URL(window.location.href).searchParams.get("fbclid") 
-    ?? createSessionId()
-
+  const sessionId = getQueryParam() ??
+    createSessionId()
   window.sessionStorage.setItem("id", sessionId);
   // rewrite url wo query param
-  window.history.replaceState({}, "", window.location.origin)
+  if(window.location.host !== "timesteader.com") {
+    window.history.replaceState({}, "", window.location.origin)
+  }
 
   initVisibilityChangeListener()
   initLinkClickListener()
+  post({ action_type: "visit"})
 }
 
-async function see (event) {
-  post(event)
-}
-
-  // https://developer.chrome.com/blog/page-lifecycle-api/#event-visibilitychange
+async function see(itemToPost) {
+  // console.log(itemToPost)
+  post(itemToPost)
+}  
 
 function initVisibilityChangeListener() {
-  // will this request be made? https://developer.mozilla.org/en-US/docs/Web/API/Navigator/sendBeacon
-   window.addEventListener("visibilitychange", (event) => {
-    post({
-      action_type: "exit"
-    })
+  window.addEventListener("visibilitychange", (event) => {
+    // https://developer.mozilla.org/en-US/docs/Web/API/Document/visibilitychange_event
+    if (document.visibilityState === 'visible') {
+      post({ action_type: "re-enter" })
+    } else if (document.visibilityState === 'hidden') {
+      post({ action_type: "exit" })
+    }
   })
 }
-
 
 // add event listener to window, post if click is href
 function initLinkClickListener() {
   window.addEventListener("click", (event) => {
-    const { localName } = event.target
+    const {
+      localName
+    } = event.target
     if (localName === "a") {
       const itemToPost = {
-          action_type: "click",
-          action: event.target.href,
-          action_detail: `${event.target.innerText}`,      
+        action_type: "click",
+        action: event.target.href,
+        action_detail: `${event.target.innerText}`,
       }
       post(itemToPost)
     }
@@ -73,26 +65,26 @@ async function post(itemToPost) {
     referrer: document.referrer,
   })
 
-
-  // console.log(itemToPost)
-  await database
-    .from(SUPABASE_TABLE_NAME)
-    .insert({data: itemToPost}, {
-      returning: 'minimal'
-    })
-
-    // we don't really care if it fails
+  navigator.sendBeacon(
+    getApiUrl(),
+    JSON.stringify(itemToPost)
+  )
+  // we don't really care if it fails
 }
 
 function createSessionId() {
-    const length = 24
-    var result           = '';
-    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    var charactersLength = characters.length;
-    for ( var i = 0; i < length; i++ ) {
-        result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
-    return result;
+  const length = 24
+  var result = '';
+  var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  var charactersLength = characters.length;
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
+
+function getApiUrl() {
+  return window.location.hostname === "127.0.0.1" ? "http://localhost:3000/api/see" : "https://client-eight-snowy.vercel.app/api/see"
 }
 
 module.exports = {
